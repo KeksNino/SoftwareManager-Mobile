@@ -1,6 +1,7 @@
 package com.KeksPirates.SoftwareManager
 
 import android.os.Bundle
+import android.os.StrictMode
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,14 +25,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.KeksPirates.SoftwareManager.ui.theme.SoftwareManagerTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 
 private val client = OkHttpClient()
-
 fun run(): String {
     val request = Request.Builder()
         .url("https://publicobject.com/helloworld.txt")
@@ -44,8 +42,8 @@ fun run(): String {
             println("$name: $value")
         }
 
-        println(response.body!!.string())
-        response.body!!.string()
+//        println(response.body.string())
+        response.body.string()
     }
 }
 
@@ -56,6 +54,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             SoftwareManagerTheme {
                 SoftwareManagerApp()
+                Thread {
+                    try {
+                        println(run())
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }.start()
             }
         }
     }
@@ -105,7 +110,6 @@ enum class AppDestinations(
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
-//        text = run(),
         modifier = modifier
     )
 }
@@ -114,9 +118,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     SoftwareManagerTheme {
-//        Greeting("Android")
-//        println(run())
-        Greeting("test")
+        Greeting("Android")
 
     }
 }
